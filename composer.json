@@ -1,0 +1,22 @@
+{
+    "name": "baba/favoritebutton-plugin",
+    "type": "october-plugin",
+    "description": "Favorites for October CMS with groups, tags, search and notes.",
+    "keywords": ["october", "octobercms", "favorites", "bookmarks", "tags", "collections"],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0"
+    },
+    "extra": {
+        "october": {
+            "plugin": "BABA.Favoritebutton"
+        }
+    },
+    "homepage": "https://web4theme.com",
+    "authors": [
+        {
+            "name": "BABA",
+            "homepage": "https://web4theme.com"
+        }
+    ]
+}

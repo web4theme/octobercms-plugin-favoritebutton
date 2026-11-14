@@ -1,0 +1,23 @@
+<form
+    class="bf-form"
+    data-request="{{ bf_handler }}"
+    data-request-update="'{{ __SELF__ }}::button': '#{{ bf_instance }}'"
+>
+    <input type="hidden" name="target_type" value="{{ bf_target_type }}">
+    <input type="hidden" name="target_id" value="{{ bf_target_id }}">
+    <input type="hidden" name="title" value="{{ bf_title }}">
+    <input type="hidden" name="url" value="{{ bf_url }}">
+    <input type="hidden" name="excerpt" value="{{ bf_excerpt }}">
+    <input type="hidden" name="image_url" value="{{ bf_image_url }}">
+    <input type="hidden" name="item_key" value="{{ bf_item_key }}">
+    <input type="hidden" name="instance" value="{{ bf_instance }}">
+    <input type="hidden" name="_token" value="{{ bf_csrf }}">
+
+    <button type="submit" class="bf-button{{ bf_saved ? ' is-saved' : '' }}" aria-pressed="{{ bf_saved ? 'true' : 'false' }}">
+        <svg class="bf-heart" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span>{{ bf_saved ? 'Saved' : 'Save' }}</span>
+        {% if bf_show_count and bf_count > 0 %}<span class="bf-count">{{ bf_count }}</span>{% endif %}
+    </button>
+</form>

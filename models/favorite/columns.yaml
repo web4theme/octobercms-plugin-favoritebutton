@@ -1,0 +1,24 @@
+columns:
+    id:
+        label: ID
+        type: number
+        width: 60px
+        invisible: true
+    title:
+        label: Saved item
+        searchable: true
+    user_id:
+        label: User ID
+        type: number
+        width: 80px
+    group:
+        label: Group
+        relation: group
+        select: name
+    notes:
+        label: Note
+        type: text
+        searchable: true
+    created_at:
+        label: Saved
+        type: datetime

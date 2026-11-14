@@ -1,0 +1,13 @@
+title: Saved favorites
+list: $/baba/favoritebutton/models/favorite/columns.yaml
+modelClass: BABA\Favoritebutton\Models\Favorite
+
+showCheckboxes: true
+
+noRecordsMessage: No favorites saved yet.
+
+recordsPerPage: 30
+
+defaultSort:
+    column: created_at
+    direction: desc

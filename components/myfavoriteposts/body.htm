@@ -1,0 +1,144 @@
+{% if favorite_message %}
+    <div class="bmf-alert bmf-alert-ok" role="status">{{ favorite_message }}</div>
+{% endif %}
+{% if favorite_error %}
+    <div class="bmf-alert bmf-alert-error" role="alert">{{ favorite_error }}</div>
+{% endif %}
+
+<div class="bmf-toolbar">
+    <form class="bmf-search"
+          data-request="{{ favorite_search_handler }}"
+          data-request-update="'{{ __SELF__ }}::body': '#{{ favorite_instance }}'">
+        <input type="hidden" name="_token" value="{{ favorite_csrf }}">
+        <input type="hidden" name="instance" value="{{ favorite_instance }}">
+        <label class="bmf-search-field">
+            <span class="bmf-sr">Search favorites</span>
+            <input type="search" name="q" value="{{ favorite_query }}" placeholder="Search titles, notes and tags…">
+        </label>
+        <label class="bmf-select-field">
+            <span class="bmf-sr">Group</span>
+            <select name="group">
+                <option value="0">All groups</option>
+                {% for group in favorite_groups %}
+                    <option value="{{ group.id }}" {{ favorite_group == group.id ? 'selected' : '' }}>{{ group.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label class="bmf-select-field">
+            <span class="bmf-sr">Tag</span>
+            <select name="tag">
+                <option value="0">All tags</option>
+                {% for tag in favorite_tags %}
+                    <option value="{{ tag.id }}" {{ favorite_tag == tag.id ? 'selected' : '' }}>{{ tag.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <button type="submit" class="bmf-button">Search</button>
+    </form>
+
+    <form class="bmf-new-group"
+          data-request="{{ favorite_group_handler }}"
+          data-request-update="'{{ __SELF__ }}::body': '#{{ favorite_instance }}'">
+        <input type="hidden" name="_token" value="{{ favorite_csrf }}">
+        <input type="hidden" name="instance" value="{{ favorite_instance }}">
+        <input type="text" name="group_name" maxlength="60" placeholder="New group name" aria-label="New group name">
+        <input type="color" name="group_color" value="#0f766e" aria-label="Group colour">
+        <button type="submit" class="bmf-button bmf-button-quiet">Add group</button>
+    </form>
+</div>
+
+<div class="bmf-meta-line">
+    <span>{{ favorite_total }} saved</span>
+    {% if favorite_demo_mode and favorite_total == 0 %}
+        <form class="bmf-demo-form"
+              data-request="{{ favorite_demo_handler }}"
+              data-request-update="'{{ __SELF__ }}::body': '#{{ favorite_instance }}'">
+            <input type="hidden" name="_token" value="{{ favorite_csrf }}">
+        <input type="hidden" name="instance" value="{{ favorite_instance }}">
+            <button type="submit" class="bmf-link-button">Load a sample collection</button>
+        </form>
+    {% endif %}
+</div>
+
+{% if not favorites|length %}
+    <div class="bmf-empty">
+        <p class="bmf-empty-title">No favorites here yet.</p>
+        <p>Use the Save button on an article, then add a group, tags and a note.</p>
+    </div>
+{% else %}
+    <div class="bmf-list">
+        {% for favorite in favorites %}
+            <article class="bmf-item" id="favorite-{{ favorite.id }}">
+                <div class="bmf-item-head">
+                    <div>
+                        {% if favorite.url %}
+                            <a class="bmf-item-title" href="{{ favorite.url }}">{{ favorite.title }}</a>
+                        {% else %}
+                            <span class="bmf-item-title">{{ favorite.title }}</span>
+                        {% endif %}
+                        {% if favorite.excerpt %}
+                            <p class="bmf-item-excerpt">{{ favorite.excerpt }}</p>
+                        {% endif %}
+                    </div>
+                    {% if favorite.group %}
+                        <span class="bmf-group-chip" style="--bmf-group: {{ favorite.group.color ?: '#0f766e' }}">{{ favorite.group.name }}</span>
+                    {% endif %}
+                </div>
+
+                <form class="bmf-item-form"
+                      data-request="{{ favorite_save_handler }}"
+                      data-request-update="'{{ __SELF__ }}::body': '#{{ favorite_instance }}'">
+                    <input type="hidden" name="_token" value="{{ favorite_csrf }}">
+        <input type="hidden" name="instance" value="{{ favorite_instance }}">
+                    <input type="hidden" name="favorite_id" value="{{ favorite.id }}">
+                    <input type="hidden" name="q" value="{{ favorite_query }}">
+                    <input type="hidden" name="group" value="{{ favorite_group }}">
+                    <input type="hidden" name="tag" value="{{ favorite_tag }}">
+
+                    <div class="bmf-item-fields">
+                        <label class="bmf-field">
+                            <span>Group</span>
+                            <select name="group_id">
+                                <option value="0">No group</option>
+                                {% for group in favorite_groups %}
+                                    <option value="{{ group.id }}" {{ favorite.group_id == group.id ? 'selected' : '' }}>{{ group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                        <label class="bmf-field">
+                            <span>Tags</span>
+                            <input type="text" name="tags" value="{{ favorite.tags_label }}" placeholder="design, reading">
+                        </label>
+                    </div>
+
+                    <label class="bmf-field bmf-notes">
+                        <span>Note</span>
+                        <textarea name="notes" rows="3" maxlength="5000" placeholder="Why did you save this?">{{ favorite.notes }}</textarea>
+                    </label>
+
+                    <div class="bmf-item-actions">
+                        <button type="submit" class="bmf-button bmf-button-small">Save details</button>
+                        {% if favorite.tags|length %}
+                            <span class="bmf-tag-list">
+                                {% for tag in favorite.tags %}<span class="bmf-tag">{{ tag.name }}</span>{% endfor %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </form>
+
+                <form class="bmf-remove-form"
+                      data-request="{{ favorite_remove_handler }}"
+                      data-request-update="'{{ __SELF__ }}::body': '#{{ favorite_instance }}'"
+                      data-request-confirm="Remove this favorite?">
+                    <input type="hidden" name="_token" value="{{ favorite_csrf }}">
+        <input type="hidden" name="instance" value="{{ favorite_instance }}">
+                    <input type="hidden" name="favorite_id" value="{{ favorite.id }}">
+                    <input type="hidden" name="q" value="{{ favorite_query }}">
+                    <input type="hidden" name="group" value="{{ favorite_group }}">
+                    <input type="hidden" name="tag" value="{{ favorite_tag }}">
+                    <button type="submit" class="bmf-remove-button" aria-label="Remove {{ favorite.title }}">Remove</button>
+                </form>
+            </article>
+        {% endfor %}
+    </div>
+{% endif %}
